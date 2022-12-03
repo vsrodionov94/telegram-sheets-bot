@@ -1,0 +1,73 @@
+{
+  "name": "telegram-sheets-bot",
+  "version": "0.0.1",
+  "description": "Telegram bot for money",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vsrodionov94/telegram-sheets-bot.git"
+  },
+  "author": "Vladimir Rodionov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vsrodionov94/telegram-sheets-bot/issues"
+  },
+  "homepage": "https://github.com/vsrodionov94/telegram-sheets-bot#readme",
+  "scripts": {
+    "start": "npm run build && node dist/index.js",
+    "dev": "nodemon | pino-pretty",
+    "build": "rm -rf ./dist && tsc && tsc-alias && npm run copyfiles",
+    "test": "ENV=${ENV:=test} npm run db:reset && jest ./src --runInBand",
+    "test:coverage": "ENV=${ENV:=test} npm run db:reset && jest ./src --coverage --runInBand",
+    "lint": "eslint --ignore-path .gitignore src/ && prettier --check --ignore-path .gitignore . && tsc --noEmit ",
+    "lint:fix": "eslint --ignore-path .gitignore src/ --fix; prettier --write --ignore-path .gitignore . ; tsc --noEmit",
+    "prepare": "husky install",
+    "copyfiles": "sh ./scripts/copyfiles.sh",
+    "ts": "ts-node -r tsconfig-paths/register --transpile-only",
+    "db:reset": "npm run ts src/bin/reset-db.ts | pino-pretty",
+    "db:migrate": "knex migrate:latest",
+    "db:migrate:reset": "knex migrate:rollback --all=true",
+    "db:migrate:down": "knex migrate:down",
+    "watch-inputs": "npm run ts ./src/bin/watch-input.ts"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "dotenv": "^16.0.1",
+    "typescript": "^4.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.1",
+    "jest": "^28.1.2",
+    "lint-staged": "^12.4.2",
+    "nodemon": "^2.0.16",
+    "pino-pretty": "^7.6.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.0",
+    "tsc-alias": "^1.6.7",
+    "tsconfig-paths": "^4.0.0"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": true,
+    "arrowParens": "avoid"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
+  }
+}
